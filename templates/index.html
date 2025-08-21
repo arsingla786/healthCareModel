@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Disease Prediction</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        h1 { color: #333; }
+        .symptoms-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .prediction {
+            margin-top: 20px;
+            font-weight: bold;
+            color: green;
+        }
+        button {
+            padding: 8px 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <h1>Disease Prediction</h1>
+    <form method="POST">
+        <div class="symptoms-container">
+            {% for symptom in symptoms %}
+                <label>
+                    <input type="checkbox" name="symptoms" value="{{ symptom }}">
+                    {{ symptom }}
+                </label>
+            {% endfor %}
+        </div>
+        <button type="submit">Predict Disease</button>
+    </form>
+
+    {% if prediction %}
+        <div class="prediction">
+            Predicted Disease: {{ prediction }}
+        </div>
+    {% endif %}
+</body>
+</html>
