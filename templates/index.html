@@ -1,50 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Disease Prediction</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        h1 { color: #333; }
-        .symptoms-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        .prediction {
-            margin-top: 20px;
-            font-weight: bold;
-            color: green;
-        }
-        button {
-            padding: 8px 16px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover { background: #45a049; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disease Prediction</title>
+  <!-- Tailwind CSS for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts for a modern typeface -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Applying the Inter font to the body */
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    /* Styles for the loading overlay */
+    #loading-overlay {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    }
+    #loading-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+  </style>
 </head>
-<body>
-    <h1>Disease Prediction</h1>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+  <!-- Loading Overlay - now visible by default -->
+  <div id="loading-overlay" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center visible">
+    <div class="flex items-center space-x-6">
+      <!-- Stethoscope Icon -->
+      <svg class="h-16 w-16 text-blue-600 animate-pulse" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+      <!-- Doctor Icon -->
+      <svg class="h-16 w-16 text-blue-600 animate-pulse [animation-delay:200ms]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <!-- Heartbeat Icon -->
+      <svg class="h-16 w-16 text-blue-600 animate-pulse [animation-delay:400ms]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+    </div>
+    <p class="text-gray-600 font-medium mt-6 text-lg">Loading Application...</p>
+  </div>
+
+  <!-- Main container with a card-like appearance -->
+  <div class="container bg-white w-full max-w-4xl mx-auto my-8 p-8 rounded-2xl shadow-lg">
+
+    <!-- Header Section -->
+    <header class="text-center mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Disease Prediction System</h1>
+      <p class="text-gray-500 mt-2">Select your symptoms below to get a prediction.</p>
+    </header>
+
+    <!-- Form for symptom selection -->
     <form method="POST">
-        <div class="symptoms-container">
-            {% for symptom in symptoms %}
-                <label>
-                    <input type="checkbox" name="symptoms" value="{{ symptom }}">
-                    {{ symptom }}
-                </label>
-            {% endfor %}
-        </div>
-        <button type="submit">Predict Disease</button>
+      <!-- Scrollable container for symptoms -->
+      <div class="symptoms-container max-h-96 overflow-y-auto p-6 bg-gray-50 border border-gray-200 rounded-lg grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
+        
+        <!-- Flask loop to generate symptom checkboxes -->
+        {% for symptom in symptoms %}
+          <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+            <input type="checkbox" name="symptoms" value="{{ symptom }}" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+            <span class="ml-3 text-gray-700 font-medium">{{ symptom }}</span>
+          </label>
+        {% endfor %}
+        
+      </div>
+      
+      <!-- Submit Button -->
+      <button class="btn w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300" type="submit">
+        Predict Disease
+      </button>
     </form>
 
+    <!-- Prediction result section, shown only if a prediction exists -->
     {% if prediction %}
-        <div class="prediction">
-            Predicted Disease: {{ prediction }}
-        </div>
+      <div class="prediction mt-8 text-center bg-green-100 border-l-4 border-green-500 text-green-800 p-4 rounded-lg">
+        <h2 class="text-xl font-bold">Predicted Disease:</h2>
+        <p class="text-2xl font-semibold mt-2">{{ prediction }}</p>
+      </div>
     {% endif %}
+
+  </div>
+
+  <!-- JavaScript to trigger the loading screen -->
+  <script>
+    const form = document.querySelector('form');
+    const loadingOverlay = document.getElementById('loading-overlay');
+
+    // Hide the initial loading screen after a delay
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            if (loadingOverlay) {
+                loadingOverlay.classList.remove('visible');
+            }
+        }, 2000); // The loading screen will be visible for 2 seconds
+    });
+
+    // When the form is submitted, show the loading overlay again
+    if (form && loadingOverlay) {
+      form.addEventListener('submit', function() {
+        // Change text for prediction
+        const loadingText = loadingOverlay.querySelector('p');
+        if(loadingText) {
+            loadingText.textContent = 'Analyzing symptoms...';
+        }
+        loadingOverlay.classList.add('visible');
+      });
+    }
+  </script>
+
 </body>
 </html>
