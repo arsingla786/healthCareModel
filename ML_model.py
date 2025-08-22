@@ -5,10 +5,10 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from catboost import CatBoostClassifier
 import joblib
-import os
+import os 
 
 # Load dataset
-df = pd.read_csv("C:\\Users\\Arnav Singla\\Downloads\\cleaned_disease_dataset .csv")
+df = pd.read_csv("C:\\Users\\Arnav Singla\\Downloads\\latest_disease_dataset.csv")
 
 # OPTIONAL: Add small noise to make data less "perfect"
 # (simulate real-world patient variation)
