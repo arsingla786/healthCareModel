@@ -64,6 +64,6 @@ joblib.dump(cat_model, 'model/model.pkl')
 joblib.dump(le, 'model/label_encoder.pkl')
 joblib.dump(list(X.columns), 'model/symptom_columns.pkl')
 
-
+    
 
 
