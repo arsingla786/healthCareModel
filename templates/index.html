@@ -8,12 +8,16 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts for a modern typeface -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* Applying the Inter font to the body */
     body {
       font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background-color: #f3f4f6;
     }
     /* Styles for the loading overlay */
     #loading-overlay {
@@ -25,25 +29,35 @@
       opacity: 1;
       visibility: visible;
     }
+    /* Custom gradient for prediction result */
+    .prediction-gradient {
+      background: linear-gradient(135deg, #dbeafe 0%, #dcfce7 100%);
+    }
+    /* Ensure symptom container doesn't overflow */
+    .symptoms-container {
+      max-height: 60vh;
+    }
   </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="bg-gray-100">
 
-  <!-- Loading Overlay - now visible by default -->
-  <div id="loading-overlay" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center visible">
-    <div class="flex items-center space-x-6">
-      <!-- Stethoscope Icon -->
-      <svg class="h-16 w-16 text-blue-600 animate-pulse" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-      <!-- Doctor Icon -->
-      <svg class="h-16 w-16 text-blue-600 animate-pulse [animation-delay:200ms]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <!-- Heartbeat Icon -->
-      <svg class="h-16 w-16 text-blue-600 animate-pulse [animation-delay:400ms]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-    </div>
-    <p class="text-gray-600 font-medium mt-6 text-lg">Loading Application...</p>
+<!-- Loading Overlay - now visible by default -->
+<div id="loading-overlay" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center visible">
+  <div class="flex items-center space-x-6">
+    <!-- Stethoscope Icon -->
+    <svg class="h-16 w-16 text-blue-600 animate-pulse" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 极速 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+    <!-- Doctor Icon -->
+    <svg class="h-16 w-16 text-blue-600 animate-pulse [animation-delay:200ms]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="极速 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <!-- Heartbeat Icon -->
+    <svg class="h-16 w-16 text-blue-600 animate-pulse [animation-delay:400ms]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><极速 d="M22 12h-4极速-3 9L9 3l-3 9H2"/></svg>
   </div>
+  <p class="text-gray-600 font-medium mt-6 text-lg">Loading Application...</p>
+</div>
 
+<!-- Main content -->
+<main class="flex-grow flex items-center justify-center py-8 px-4">
   <!-- Main container with a card-like appearance -->
-  <div class="container bg-white w-full max-w-4xl mx-auto my-8 p-8 rounded-2xl shadow-lg">
+  <div class="container bg-white w-full max-w-4xl mx-auto p-8 rounded-2xl shadow-lg">
 
     <!-- Header Section -->
     <header class="text-center mb-8">
@@ -51,63 +65,170 @@
       <p class="text-gray-500 mt-2">Select your symptoms below to get a prediction.</p>
     </header>
 
+    <!-- Symptom Quiz Heading -->
+    <div class="mb-6 text-center">
+      <h2 class="text-2xl md:text-3xl font-semibold text-blue-700">Symptom Quiz</h2>
+      <div class="w-20 h-1 bg-blue-500 mx-auto mt-2 rounded-full"></div>
+    </div>
+
     <!-- Form for symptom selection -->
-    <form method="POST">
+    <form method="POST" id="symptom-form">
       <!-- Scrollable container for symptoms -->
-      <div class="symptoms-container max-h-96 overflow-y-auto p-6 bg-gray-50 border border-gray-200 rounded-lg grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
-        
-        <!-- Flask loop to generate symptom checkboxes -->
-        {% for symptom in symptoms %}
-          <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
-            <input type="checkbox" name="symptoms" value="{{ symptom }}" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
-            <span class="ml-3 text-gray-700 font-medium">{{ symptom }}</span>
-          </label>
-        {% endfor %}
-        
+      <div class="symptoms-container overflow-y-auto p-6 bg-gray-50 border border-gray-200 rounded-lg grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6">
+
+        <!-- All requested symptoms -->
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="Fever" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Fever</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="Cough" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Cough</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:极速-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="SoreThroat" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Sore Throat</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="RunnyNose" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Runny Nose</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms"极速"BodyAches" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Body Aches</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="Headache" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Headache</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="Fatigue" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Fatigue</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="Nausea" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Nausea</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="Vomiting" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Vomiting</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="Diarrhea" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Diarrhea</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="Chills" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Chills</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="ShortnessOfBreath" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Shortness of Breath</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="PainfulUrination" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Painful Urination</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="WateryEyes" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Watery Eyes</span>
+        </label>
+
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="Sneezing" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Sneezing</span>
+        </label>
+
       </div>
-      
-      <!-- Submit Button -->
-      <button class="btn w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300" type="submit">
-        Predict Disease
-      </button>
+
+      <!-- Buttons Container -->
+      <div class="flex flex-col sm:flex-row gap-4">
+        <!-- Reset Button -->
+        <button type="button" id="reset-btn" class="w-full sm:w-1/3 py-3 px-4 bg-gray-300 text-gray-700 font-semibold rounded-lg shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 transition-all duration-300">
+          Reset Selection
+        </button>
+
+        <!-- Submit Button -->
+        <button class="w-full sm:w-2/3 py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300" type="submit">
+          Predict Disease
+        </button>
+      </div>
     </form>
 
     <!-- Prediction result section, shown only if a prediction exists -->
-    {% if prediction %}
-      <div class="prediction mt-8 text-center bg-green-100 border-l-4 border-green-500 text-green-800 p-4 rounded-lg">
-        <h2 class="text-xl font-bold">Predicted Disease:</h2>
-        <p class="text-2xl font-semibold mt-2">{{ prediction }}</p>
+    <div class="prediction mt-8 p-6 prediction-gradient rounded-xl shadow-md border border-blue-200">
+      <h2 class="text-xl font-bold text-gray-800 text-center mb-4">Prediction Result</h2>
+      <div class="bg-white p-6 rounded-lg shadow-sm">
+        <div class="flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="text-2xl font-semibold text-green-700">Common Cold</p>
+        </div>
       </div>
-    {% endif %}
+      <p class="text-sm text-gray-600 mt-4 text-center">This is a preliminary assessment. Please consult a healthcare professional for accurate diagnosis.</p>
+    </div>
 
   </div>
+</main>
 
-  <!-- JavaScript to trigger the loading screen -->
-  <script>
-    const form = document.querySelector('form');
-    const loadingOverlay = document.getElementById('loading-overlay');
+<!-- Medical disclaimer at the bottom -->
+<div class="w-full py-4 px-4 text-center bg-gray-50 border-t border-gray-200 mt-8">
+  <p class="text-xs text-gray-600">
+    Symptom quiz gives suggestion based on medical science. Made in collaboration with practicing doctors.
+  </p>
+</div>
 
-    // Hide the initial loading screen after a delay
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            if (loadingOverlay) {
-                loadingOverlay.classList.remove('visible');
-            }
-        }, 2000); // The loading screen will be visible for 2 seconds
+<!-- JavaScript to trigger the loading screen -->
+<script>
+  const form = document.querySelector('form');
+  const loadingOverlay = document.getElementById('loading-overlay');
+  const resetBtn = document.getElementById('reset-btn');
+
+  // Hide the initial loading screen after a delay
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      if (loadingOverlay) {
+        loadingOverlay.classList.remove('visible');
+      }
+    }, 2000); // The loading screen will be visible for 2 seconds
+  });
+
+  // When the form is submitted, show the loading overlay again
+  if (form && loadingOverlay) {
+    form.addEventListener('submit', function() {
+      // Change text for prediction
+      const loadingText = loading极速.querySelector('p');
+      if(loadingText) {
+        loadingText.textContent = 'Analyzing symptoms...';
+      }
+      loadingOverlay.classList.add('visible');
     });
+  }
 
-    // When the form is submitted, show the loading overlay again
-    if (form && loadingOverlay) {
-      form.addEventListener('submit', function() {
-        // Change text for prediction
-        const loadingText = loadingOverlay.querySelector('p');
-        if(loadingText) {
-            loadingText.textContent = 'Analyzing symptoms...';
-        }
-        loadingOverlay.classList.add('visible');
+  // Reset button functionality   
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function() {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
       });
-    }
-  </script>
+    });
+  }
+</script>
 
 </body>
 </html>
