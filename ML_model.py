@@ -8,7 +8,7 @@ import joblib
 import os
 
 # Load dataset
-df = pd.read_csv("C:\\Users\\Arnav Singla\\Downloads\\new_dataset.csv")
+df = pd.read_csv("C:\\Users\\Arnav Singla\\Downloads\\cleaned_disease_dataset .csv")
 
 # OPTIONAL: Add small noise to make data less "perfect"
 # (simulate real-world patient variation)
@@ -63,3 +63,7 @@ os.makedirs('model', exist_ok=True)
 joblib.dump(cat_model, 'model/model.pkl')
 joblib.dump(le, 'model/label_encoder.pkl')
 joblib.dump(list(X.columns), 'model/symptom_columns.pkl')
+
+
+
+
