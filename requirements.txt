@@ -4,3 +4,4 @@ xgboost
 catboost
 pandas  
 numpy
+gunicorn    
