@@ -198,13 +198,11 @@
     <div class="prediction mt-6 text-center bg-red-100 border-l-4 border-red-500 text-red-800 p-4 rounded-lg">
       <h2 class="text-xl font-bold">Prediction Result</h2>
       <p class="text-lg mt-2">You might be suffering from one of the following:</p>
-      <ul class="mt-4 space-y-2">
-        {% for disease, prob in predictions %}
-        <li class="text-lg font-semibold">
-          {{ loop.index }}. {{ disease }} – <span class="text-gray-700">{{ prob }}%</span>
-        </li>
-        {% endfor %}
-      </ul>
+      <p class="text-lg mt-4 font-semibold">
+  {% for disease, prob in predictions %}
+    {{ disease }}{% if not loop.last %}, {% endif %}
+  {% endfor %}
+</p>  
     </div>
 
     <!-- Book Appointment Button -->
@@ -235,7 +233,7 @@
           clearInterval(progressInterval);
         }
       }, 100);
-      
+              
       // Hide loading after 5 seconds
       setTimeout(() => {
         if (loadingOverlay) loadingOverlay.classList.remove('visible');
@@ -275,4 +273,5 @@
 </body>
 </html>   
   
- 
+
+
