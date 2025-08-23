@@ -9,7 +9,7 @@ import os
 
 # Load dataset
 df = pd.read_csv("C:\\Users\\Arnav Singla\\Downloads\\new_data.csv")
-      
+print(df.head())
 # OPTIONAL: Add small noise to make data less "perfect"
 # (simulate real-world patient variation)
 for col in df.columns[:-1]:  # skip target column
