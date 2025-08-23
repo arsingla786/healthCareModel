@@ -270,8 +270,13 @@
       });
     }
   </script>
+<script>
+  document.querySelectorAll(".symptom-label").forEach(el => {
+    el.textContent = el.textContent.replace(/([a-z])([A-Z])/g, '$1 $2');
+  });
+</script>                                                                         
 </body>
 </html>   
-  
+   
 
 
