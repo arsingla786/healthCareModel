@@ -8,8 +8,8 @@ import joblib
 import os 
 
 # Load dataset
-df = pd.read_csv("C:\\Users\\Arnav Singla\\Downloads\\latest_disease_dataset.csv")
-
+df = pd.read_csv("C:\\Users\\Arnav Singla\\Downloads\\clean_randomized_disease_dataset.csv")
+      
 # OPTIONAL: Add small noise to make data less "perfect"
 # (simulate real-world patient variation)
 for col in df.columns[:-1]:  # skip target column
