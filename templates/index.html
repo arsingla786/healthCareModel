@@ -174,15 +174,13 @@
         {% for symptom in symptoms %}
           <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
             <input type="checkbox" name="symptoms" value="{{ symptom }}" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
-            <span class="ml-3 text-gray-700 font-medium">
-  {{ symptom | regex_replace('([a-z])([A-Z])', '\1 \2') }}
-</span>  
+            <span class="ml-3 text-gray-700 font-medium">{{ symptom }}</span>
           </label>
         {% endfor %}
       </div>
       <button class="btn w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all" type="submit"> Predict Disease </button>
     </form>
-
+ 
     <!-- Show selected symptoms -->
     {% if selected_symptoms %}
     <div class="mt-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg text-blue-800">
