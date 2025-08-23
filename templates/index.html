@@ -10,24 +10,161 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Inter', sans-serif; }
-    #loading-overlay { opacity: 0; visibility: hidden; transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out; }
+    
+    /* Loading overlay animations */
+    #loading-overlay { 
+      opacity: 0; 
+      visibility: hidden; 
+      transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
     #loading-overlay.visible { opacity: 1; visibility: visible; }
+    
+    /* Stethoscope animation */
+    .stethoscope-animate {
+      animation: stethoscope-pulse 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes stethoscope-pulse {
+      0% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+      100% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+    }
+    
+    /* Heartbeat animation */
+    .heartbeat {
+      animation: heartbeat 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes heartbeat {
+      0%, 20%, 40%, 60%, 80%, 100% {
+        transform: scale(1);
+      }
+      10%, 30% {
+        transform: scale(1.2);
+      }
+      50%, 70% {
+        transform: scale(1.1);
+      }
+    }
+    
+    /* ECG Line animation */
+    .ecg-line {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      animation: ecg-draw 3s ease-in-out infinite;
+    }
+    
+    @keyframes ecg-draw {
+      0% { stroke-dashoffset: 1000; }
+      50% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: -1000; }
+    }
+    
+    /* Medical cross rotation */
+    .medical-cross {
+      animation: rotate-pulse 3s linear infinite;
+    }
+    
+    @keyframes rotate-pulse {
+      0% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(90deg) scale(1.1); }
+      50% { transform: rotate(180deg) scale(1); }
+      75% { transform: rotate(270deg) scale(1.1); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+    
+    /* DNA helix animation */
+    .dna-helix {
+      animation: dna-spin 4s linear infinite;
+    }
+    
+    @keyframes dna-spin {
+      0% { transform: rotateY(0deg); }
+      100% { transform: rotateY(360deg); }
+    }
+    
+    /* Floating particles */
+    .particle {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .particle:nth-child(odd) {
+      animation-delay: -2s;
+    }
+    
+    .particle:nth-child(even) {
+      animation-delay: -4s;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.5; }
+      50% { transform: translateY(-20px) rotate(180deg); opacity: 1; }
+    }
+    
+    /* Loading text fade */
+    .loading-text {
+      animation: text-fade 2s ease-in-out infinite;
+    }
+    
+    @keyframes text-fade {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
   </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
   <!-- Loading Overlay -->
-  <div id="loading-overlay" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center visible">
-    <div class="flex items-center space-x-6">
+  <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center visible">
+    <!-- Background particles -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="particle absolute top-1/4 left-1/4 w-2 h-2 bg-white rounded-full opacity-30"></div>
+      <div class="particle absolute top-1/3 right-1/4 w-3 h-3 bg-blue-200 rounded-full opacity-40"></div>
+      <div class="particle absolute bottom-1/4 left-1/3 w-2 h-2 bg-white rounded-full opacity-35"></div>
+      <div class="particle absolute bottom-1/3 right-1/3 w-3 h-3 bg-blue-200 rounded-full opacity-45"></div>
+      <div class="particle absolute top-1/2 left-1/5 w-2 h-2 bg-white rounded-full opacity-25"></div>
+      <div class="particle absolute top-2/3 right-1/5 w-3 h-3 bg-blue-200 rounded-full opacity-50"></div>
+    </div>
+    
+    <div class="flex items-center justify-center space-x-8 mb-8">
       <!-- Stethoscope Icon -->
-      <svg class="h-16 w-16 text-blue-600 animate-pulse" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor">
-        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
-        <path d="M21 3v5h-5"/>
-        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
-        <path d="M8 16H3v5"/>
+      <div class="stethoscope-animate">
+        <svg class="h-20 w-20 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0-1.125-.504-1.125-1.125V11.25a9 9 0 00-9-9z"/>
+        </svg>
+      </div>
+      
+      <!-- Heart with heartbeat -->
+      <div class="heartbeat">
+        <svg class="h-16 w-16 text-red-300" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M21.35,11.1H12.18L13.69,9.56C14.06,9.19 14.06,8.61 13.69,8.24C13.32,7.87 12.74,7.87 12.37,8.24L10.5,10.11L8.63,8.24C8.26,7.87 7.68,7.87 7.31,8.24C6.94,8.61 6.94,9.19 7.31,9.56L8.82,11.1H2.65C2.29,11.1 2,11.39 2,11.75C2,12.11 2.29,12.4 2.65,12.4H8.82L7.31,13.94C6.94,14.31 6.94,14.89 7.31,15.26C7.68,15.63 8.26,15.63 8.63,15.26L10.5,13.39L12.37,15.26C12.74,15.63 13.32,15.63 13.69,15.26C14.06,14.89 14.06,14.31 13.69,13.94L12.18,12.4H21.35C21.71,12.4 22,12.11 22,11.75C22,11.39 21.71,11.1 21.35,11.1Z"/>
+        </svg>
+      </div>
+      
+      <!-- Medical Cross -->
+      <div class="medical-cross">
+        <svg class="h-18 w-18 text-green-300" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M17,13H13V17H11V13H7V11H11V7H13V11H17V13Z"/>
+          <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z"/>
+        </svg>
+      </div>
+    </div>
+    
+    <!-- ECG Line Animation -->
+    <div class="mb-6">
+      <svg width="300" height="60" viewBox="0 0 300 60">
+        <path class="ecg-line" stroke="white" stroke-width="2" fill="none" 
+              d="M0,30 L50,30 L55,10 L65,50 L70,20 L75,40 L80,30 L130,30 L135,10 L145,50 L150,20 L155,40 L160,30 L210,30 L215,10 L225,50 L230,20 L235,40 L240,30 L300,30"/>
       </svg>
     </div>
-    <p class="text-gray-600 font-medium mt-6 text-lg">Loading Application...</p>
+    
+    <!-- Loading Text -->
+    <p id="loading-text" class="text-white font-semibold text-xl loading-text">Loading Medical System...</p>
+    
+    <!-- Progress indicator -->
+    <div class="mt-6 w-64 h-2 bg-white bg-opacity-30 rounded-full overflow-hidden">
+      <div id="progress-bar" class="h-full bg-white rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+    </div>
   </div>
 
   <!-- Main container -->
@@ -40,71 +177,144 @@
     </header>
 
     <!-- Symptom Form -->
-    <form method="POST">
+    <form method="POST" id="symptom-form">
       <div class="symptoms-container max-h-96 overflow-y-auto p-6 bg-gray-50 border border-gray-200 rounded-lg grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
-        {% for symptom in symptoms %}
-          <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
-            <input type="checkbox" name="symptoms" value="{{ symptom }}" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
-            <span class="ml-3 text-gray-700 font-medium">{{ symptom }}</span>
-          </label>
-        {% endfor %}
+        <!-- Sample symptoms for demo -->
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="fever" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Fever</span>
+        </label>
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="headache" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Headache</span>
+        </label>
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="cough" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Cough</span>
+        </label>
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="fatigue" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Fatigue</span>
+        </label>
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="nausea" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Nausea</span>
+        </label>
+        <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <input type="checkbox" name="symptoms" value="dizziness" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
+          <span class="ml-3 text-gray-700 font-medium">Dizziness</span>
+        </label>
       </div>
       <button class="btn w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all" type="submit"> Predict Disease </button>
     </form>
 
-    <!-- Show selected symptoms -->
-    {% if selected_symptoms %}
-    <div class="mt-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg text-blue-800">
-      <h2 class="text-lg font-semibold">You selected the following symptoms:</h2>
-      <ul class="mt-2 list-disc list-inside text-left">
-        {% for s in selected_symptoms %}
-          <li>{{ s }}</li>
-        {% endfor %}
-      </ul>
-    </div>
-    {% endif %}
+    <!-- Prediction results placeholder -->
+    <div id="results-section" class="hidden mt-8">
+      <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg text-blue-800 mb-6">
+        <h2 class="text-lg font-semibold">You selected the following symptoms:</h2>
+        <ul id="selected-symptoms-list" class="mt-2 list-disc list-inside text-left">
+          <!-- Selected symptoms will be populated here -->
+        </ul>
+      </div>
+      
+      <div class="prediction mt-6 text-center bg-red-100 border-l-4 border-red-500 text-red-800 p-4 rounded-lg">
+        <h2 class="text-xl font-bold">Prediction Result</h2>
+        <p class="text-lg mt-2">You might be suffering from one of the following:</p>
+        <ul class="mt-4 space-y-2">
+          <li class="text-lg font-semibold">1. Common Cold – <span class="text-gray-700">85%</span></li>
+          <li class="text-lg font-semibold">2. Flu – <span class="text-gray-700">12%</span></li>
+          <li class="text-lg font-semibold">3. Migraine – <span class="text-gray-700">3%</span></li>
+        </ul>
+      </div>
 
-    <!-- Prediction result -->
-    {% if predictions %}
-    <div class="prediction mt-6 text-center bg-red-100 border-l-4 border-red-500 text-red-800 p-4 rounded-lg">
-      <h2 class="text-xl font-bold">Prediction Result</h2>
-      <p class="text-lg mt-2">You might be suffering from one of the following:</p>
-      <ul class="mt-4 space-y-2">
-        {% for disease, prob in predictions %}
-        <li class="text-lg font-semibold">
-          {{ loop.index }}. {{ disease }} – <span class="text-gray-700">{{ prob }}%</span>
-        </li>
-        {% endfor %}
-      </ul>
+      <!-- Book Appointment Button -->
+      <div class="mt-8 text-center">
+        <a href="https://health-care-vj5p.onrender.com/bookings/new" target="_blank"
+           class="block w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold text-lg rounded-xl shadow-lg hover:from-blue-700 hover:to-blue-800">
+           Book Appointment Now!
+        </a>
+      </div>
     </div>
-
-    <!-- Book Appointment Button -->
-    <div class="mt-8 text-center">
-      <a href="https://health-care-vj5p.onrender.com/bookings/new" target="_blank"
-         class="block w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold text-lg rounded-xl shadow-lg hover:from-blue-700 hover:to-blue-800">
-         Book Appointment Now!
-      </a>
-    </div>
-    {% endif %}
   </div>
 
   <!-- JavaScript -->
   <script>
-    const form = document.querySelector('form');
     const loadingOverlay = document.getElementById('loading-overlay');
+    const loadingText = document.getElementById('loading-text');
+    const progressBar = document.getElementById('progress-bar');
+    const form = document.getElementById('symptom-form');
+    const resultsSection = document.getElementById('results-section');
+    
+    // Initial loading animation (5 seconds)
     window.addEventListener('load', () => {
+      // Animate progress bar
+      let progress = 0;
+      const progressInterval = setInterval(() => {
+        progress += 2;
+        progressBar.style.width = progress + '%';
+        if (progress >= 100) {
+          clearInterval(progressInterval);
+        }
+      }, 100);
+      
+      // Hide loading after 5 seconds
       setTimeout(() => {
-        if (loadingOverlay) loadingOverlay.classList.remove('visible');
-      }, 2000);
+        loadingOverlay.classList.remove('visible');
+      }, 5000);
     });
-    if (form && loadingOverlay) {
-      form.addEventListener('submit', function() {
-        const loadingText = loadingOverlay.querySelector('p');
-        if (loadingText) loadingText.textContent = 'Analyzing symptoms...';
+
+    // Form submission handling
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Prevent default form submission for demo
+        
+        // Get selected symptoms
+        const selectedSymptoms = [];
+        const checkboxes = form.querySelectorAll('input[name="symptoms"]:checked');
+        checkboxes.forEach(cb => {
+          selectedSymptoms.push(cb.value);
+        });
+        
+        if (selectedSymptoms.length === 0) {
+          alert('Please select at least one symptom.');
+          return;
+        }
+        
+        // Show loading overlay with analysis text
+        loadingText.textContent = 'Analyzing symptoms...';
+        progressBar.style.width = '0%';
         loadingOverlay.classList.add('visible');
+        
+        // Animate progress bar for analysis
+        let progress = 0;
+        const analysisInterval = setInterval(() => {
+          progress += 2;
+          progressBar.style.width = progress + '%';
+          if (progress >= 100) {
+            clearInterval(analysisInterval);
+          }
+        }, 100);
+        
+        // Hide loading and show results after 5 seconds
+        setTimeout(() => {
+          loadingOverlay.classList.remove('visible');
+          
+          // Populate selected symptoms
+          const symptomsList = document.getElementById('selected-symptoms-list');
+          symptomsList.innerHTML = '';
+          selectedSymptoms.forEach(symptom => {
+            const li = document.createElement('li');
+            li.textContent = symptom.charAt(0).toUpperCase() + symptom.slice(1);
+            symptomsList.appendChild(li);
+          });
+          
+          // Show results section
+          resultsSection.classList.remove('hidden');
+          resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }, 5000);
       });
     }
   </script>
 </body>
-</html>
-  
+</html>  
+ 
