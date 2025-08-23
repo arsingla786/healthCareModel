@@ -3,35 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Disease Prediction</title>
+  <title>HealthPredict Pro | Disease Prediction System</title>
   <!-- Tailwind CSS for styling -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google Fonts for a modern typeface -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
       font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .symptom-item {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .symptom-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .symptom-item.selected {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+    }
+    .symptom-item.selected span {
+      color: white;
     }
     #loading-overlay {
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
     #loading-overlay.visible {
       opacity: 1;
       visibility: visible;
     }
+    .prediction-card {
+      transition: all 0.3s ease;
+      animation: fadeIn 0.5s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .symptom-tag {
+      display: inline-flex;
+      align-items: center;
+      background-color: #e0f2fe;
+      color: #0369a1;
+      padding: 0.4rem 0.8rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      margin: 0.25rem;
+    }
+    .health-icon {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
   </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<body class="flex items-center justify-center min-h-screen p-4">
 
   <!-- Loading Overlay -->
-  <div id="loading-overlay" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center visible">
+  <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center">
     <div class="flex items-center space-x-6">
       <!-- Stethoscope Icon -->
-      <svg class="h-16 w-16 text-blue-600 animate-pulse" xmlns="http://www.w3.org/2000/svg" 
+      <svg class="h-16 w-16 text-white animate-pulse" xmlns="http://www.w3.org/2000/svg" 
            width="24" height="24" viewBox="0 0 24 24" fill="none" 
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
@@ -40,103 +92,146 @@
            <path d="M8 16H3v5"/>
       </svg>
       <!-- Doctor Icon -->
-      <svg class="h-16 w-16 text-blue-600 animate-pulse [animation-delay:200ms]" xmlns="http://www.w3.org/2000/svg" 
+      <svg class="h-16 w-16 text-white animate-pulse" style="animation-delay: 200ms;" xmlns="http://www.w3.org/2000/svg" 
            width="24" height="24" viewBox="0 0 24 24" fill="none" 
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
            <circle cx="12" cy="7" r="4"/>
       </svg>
       <!-- Heartbeat Icon -->
-      <svg class="h-16 w-16 text-blue-600 animate-pulse [animation-delay:400ms]" xmlns="http://www.w3.org/2000/svg" 
+      <svg class="h-16 w-16 text-white animate-pulse" style="animation-delay: 400ms;" xmlns="http://www.w3.org/2000/svg" 
            width="24" height="24" viewBox="0 0 24 24" fill="none" 
            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
       </svg>
     </div>
-    <p class="text-gray-600 font-medium mt-6 text-lg">Loading Application...</p>
+    <p class="text-white font-medium mt-6 text-lg">Loading HealthPredict Pro...</p>
   </div>
 
   <!-- Main container -->
-  <div class="container bg-white w-full max-w-4xl mx-auto my-8 p-8 rounded-2xl shadow-lg">
+  <div class="glass-card w-full max-w-4xl mx-auto p-8">
 
     <!-- Header -->
     <header class="text-center mb-8">
-      <h1 class="text-3xl md:text-4xl font-bold text-gray-800">Disease Prediction System</h1>
-      <p class="text-gray-500 mt-2">Select your symptoms below to get a prediction.</p>
+      <div class="flex justify-center items-center mb-4">
+        <i class="fas fa-heartbeat text-4xl health-icon mr-3"></i>
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800">HealthPredict Pro</h1>
+      </div>
+      <p class="text-gray-500 mt-2">Select your symptoms below to get an AI-powered prediction.</p>
     </header>
 
     <!-- Symptom Form -->
-    <form method="POST">
-      <div class="symptoms-container max-h-96 overflow-y-auto p-6 bg-gray-50 border border-gray-200 rounded-lg grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8">
+    <form method="POST" id="prediction-form">
+      <!-- Symptom selection grid -->
+      <div class="symptoms-container max-h-96 overflow-y-auto p-6 bg-gray-50 border border-gray-200 rounded-lg grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-8">
         {% for symptom in symptoms %}
-          <label class="flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-400 transition-all duration-200">
+          <label class="symptom-item flex items-center p-3 border border-gray-200 bg-white rounded-lg cursor-pointer transition-all duration-200 hover:shadow-md">
             <input type="checkbox" name="symptoms" value="{{ symptom }}" class="h-5 w-5 rounded text-blue-600 focus:ring-blue-500 border-gray-300">
-            <span class="ml-3 text-gray-700 font-medium">{{ symptom }}</span>
+            <span class="ml-3 text-gray-700 font-medium text-sm">{{ symptom }}</span>
           </label>
         {% endfor %}
       </div>
       
-      <button class="btn w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300" type="submit">
-        Predict Disease
+      <button class="btn w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg shadow-md hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 transform hover:-translate-y-0.5" type="submit">
+        <i class="fas fa-brain mr-2"></i> Predict Disease
       </button>
     </form>
 
     <!-- Show selected symptoms -->
     {% if selected_symptoms %}
       <div class="mt-8 bg-blue-50 border-l-4 border-blue-500 p-4 rounded-lg text-blue-800">
-        <h2 class="text-lg font-semibold">You selected the following symptoms:</h2>
-        <ul class="mt-2 list-disc list-inside text-left">
+        <h2 class="text-lg font-semibold flex items-center">
+          <i class="fas fa-check-circle mr-2"></i> You selected the following symptoms:
+        </h2>
+        <div class="mt-2 flex flex-wrap">
           {% for s in selected_symptoms %}
-            <li>{{ s }}</li>
+            <span class="symptom-tag">
+              {{ s }}
+            </span>
           {% endfor %}
-        </ul>
+        </div>
       </div>
     {% endif %}
 
     <!-- Prediction result -->
     {% if prediction %}
-      <div class="prediction mt-6 text-center bg-red-100 border-l-4 border-red-500 text-red-800 p-4 rounded-lg">
-        <h2 class="text-xl font-bold">Prediction Result</h2>
-        <p class="text-2xl font-semibold mt-2">
-          You might be suffering from – <span class="underline">{{ prediction }}</span>
+      <div class="prediction-card mt-6 p-6 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 shadow-sm">
+        <h2 class="text-xl font-bold text-gray-800 flex items-center">
+          <i class="fas fa-diagnoses mr-2 text-blue-600"></i> Prediction Result
+        </h2>
+        <div class="mt-4 p-4 bg-white rounded-lg shadow-sm">
+          <p class="text-lg">
+            Based on your symptoms, you might be suffering from:
+          </p>
+          <p class="text-2xl font-semibold mt-2 text-blue-700">
+            {{ prediction }}
+          </p>
+        </div>
+        <p class="text-sm text-gray-500 mt-4 italic">
+          <i class="fas fa-info-circle mr-1"></i> Note: This is an AI-powered prediction and should not replace professional medical advice.
         </p>
       </div>
 
       <!-- Book Appointment Button -->
       <div class="mt-8 text-center">
         <a href="https://health-care-vj5p.onrender.com/bookings/new" target="_blank" 
-           class="block w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold text-lg rounded-xl shadow-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300">
-          Book Appointment Now!
+           class="inline-block w-full py-4 px-6 bg-gradient-to-r from-green-600 to-green-700 text-white font-bold text-lg rounded-xl shadow-lg hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 transition-all duration-300 transform hover:-translate-y-0.5">
+          <i class="fas fa-calendar-check mr-2"></i> Book Appointment Now!
         </a>
       </div>
     {% endif %}
 
   </div>
 
-  <!-- JavaScript for loading screen -->
+  <!-- JavaScript for enhanced UI -->
   <script>
-    const form = document.querySelector('form');
-    const loadingOverlay = document.getElementById('loading-overlay');
-
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        if (loadingOverlay) {
-          loadingOverlay.classList.remove('visible');
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.querySelector('form');
+      const loadingOverlay = document.getElementById('loading-overlay');
+      const symptomItems = document.querySelectorAll('.symptom-item');
+      
+      // Add interactivity to symptom items
+      symptomItems.forEach(item => {
+        const checkbox = item.querySelector('input[type="checkbox"]');
+        
+        item.addEventListener('click', function(e) {
+          if (e.target !== checkbox) {
+            checkbox.checked = !checkbox.checked;
+          }
+          
+          if (checkbox.checked) {
+            item.classList.add('selected');
+          } else {
+            item.classList.remove('selected');
+          }
+        });
+        
+        // Initialize selected state
+        if (checkbox.checked) {
+          item.classList.add('selected');
         }
-      }, 2000);
-    });
-
-    if (form && loadingOverlay) {
-      form.addEventListener('submit', function() {
-        const loadingText = loadingOverlay.querySelector('p');
-        if (loadingText) {
-          loadingText.textContent = 'Analyzing symptoms...';
-        }
-        loadingOverlay.classList.add('visible');
       });
-    }
+       
+      // Loading screen handling
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          if (loadingOverlay) {
+            loadingOverlay.classList.remove('visible');
+          }
+        }, 2000);
+      });
+
+      if (form && loadingOverlay) {
+        form.addEventListener('submit', function() {
+          const loadingText = loadingOverlay.querySelector('p');
+          if (loadingText) {
+            loadingText.textContent = 'Analyzing symptoms with AI...';
+          }
+          loadingOverlay.classList.add('visible');
+        });
+      }
+    });
   </script>
 
 </body>
 </html>
- 
